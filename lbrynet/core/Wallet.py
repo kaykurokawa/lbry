@@ -1264,7 +1264,11 @@ class LBRYumWallet(Wallet):
         return d
 
     def get_new_address(self):
-        d = threads.deferToThread(self.wallet.create_new_address)
+        cmd = known_commands['addrequest'] 
+        func = getattr(self.cmd_runner,cmd.name)
+        amount = 0 
+        d = threads.deferToThread(func,amount) 
+        d.addCallback(lambda result: result['address'])
         d.addCallback(self._save_wallet)
         return d
 
